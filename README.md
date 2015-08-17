@@ -8,6 +8,26 @@ $ docker info
 $ docker events
 ```
 
+## Port Access
+
+```sh
+docker-machine create -d virtualbox dev
+docker-machine stop dev
+
+# enable access to common ports on VM
+VBoxManage modifyvm "dev" --natpf1 "tcp-port3000,tcp,,3000,,3000"
+VBoxManage modifyvm "dev" --natpf1 "tcp-port4000,tcp,,4000,,4000"
+VBoxManage modifyvm "dev" --natpf1 "tcp-port8000,tcp,,8000,,8000"
+VBoxManage modifyvm "dev" --natpf1 "tcp-port8001,tcp,,8001,,8001"
+VBoxManage modifyvm "dev" --natpf1 "tcp-port8080,tcp,,8080,,8080"
+VBoxManage modifyvm "dev" --natpf1 "tcp-port9000,tcp,,9000,,9000"
+VBoxManage modifyvm "dev" --natpf1 "tcp-port9001,tcp,,9001,,9001"
+
+docker-machine start dev
+
+eval "$(docker-machine env dev)"
+```
+
 ## Images
 
 ### List
