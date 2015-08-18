@@ -8,6 +8,16 @@ $ docker info
 $ docker events
 ```
 
+## Shell access to host
+
+```sh
+$ docker-machine ssh dev
+```
+
+```sh
+$ docker-machine scp /etc/hosts dev:/tmp/
+```
+
 ## Port Access
 
 ```sh
@@ -82,9 +92,10 @@ $ docker load -i /tmp/cool-file-image.tar
 ### Run in Foreground (interactive)
 
 ```sh
-$ docker run -it --name shell alpine /bin/sh
-$ docker run -it --name pinger alpine /bin/sh -c "ping 8.8.8.8"
+$ docker run -it --rm --name shell alpine /bin/sh
+$ docker run -it --rm --name pinger alpine /bin/sh -c "ping 8.8.8.8"
 
+# --rm for automatically removing container on exit
 # -i for interactive
 # -t for tty
 
@@ -95,8 +106,10 @@ $ docker run -it --name pinger alpine /bin/sh -c "ping 8.8.8.8"
 
 ```sh
 $ docker run -d --name pinger alpine /bin/sh -c "ping 8.8.8.8"
+$ docker run -d --name pinger --restart=always alpine ping -c4 8.8.8.8
 
 # -d for detached
+# --restart for restart policy (no, always, on-failure, on-failure:10)
 ```
 
 ### List Containers
@@ -140,6 +153,19 @@ $ docker attach pinger
 ```sh
 $ docker inspect pinger
 $ docker inspect pinger | grep -i PID
+```
+
+### Ports
+
+```sh
+$ docker run --name web1 -d -P nginx
+$ docker run --name web2 -d -p 8080:80 nginx
+
+$ docker port web1
+$ docker port web1 80
+
+$ curl "$(docker-machine ip dev):$(docker port web1 80 | cut -d':' -f2)"
+$ curl "$(docker-machine ip dev):$(docker port web2 80 | cut -d':' -f2)"
 ```
 
 ### Live statistics
