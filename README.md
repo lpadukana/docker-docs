@@ -1,5 +1,19 @@
 # Docker Stuff
 
+## Docker machines
+
+For boot2docker
+
+```sh
+$ docker-machine create -d virtualbox dev
+```
+
+For RancherOS
+
+```sh
+$ docker-machine create -d virtualbox --virtualbox-boot2docker-url https://github.com/rancher/os/releases/download/v0.3.3/machine-rancheros.iso ros
+```
+
 ## Info
 
 ```sh
@@ -18,22 +32,23 @@ $ docker-machine ssh dev
 $ docker-machine scp /etc/hosts dev:/tmp/
 ```
 
-## Port Access
+## Port NATing to localhost
 
 ```sh
-docker-machine create -d virtualbox dev
-docker-machine stop dev
+# PURELY COSMETIC: enable access to common ports on the docker host VM
+# this will nat the ports from $(docker-machine ip dev) to 'localhost'
 
-# enable access to common ports on VM
-VBoxManage modifyvm "dev" --natpf1 "tcp-port3000,tcp,,3000,,3000"
-VBoxManage modifyvm "dev" --natpf1 "tcp-port4000,tcp,,4000,,4000"
-VBoxManage modifyvm "dev" --natpf1 "tcp-port8000,tcp,,8000,,8000"
-VBoxManage modifyvm "dev" --natpf1 "tcp-port8001,tcp,,8001,,8001"
-VBoxManage modifyvm "dev" --natpf1 "tcp-port8080,tcp,,8080,,8080"
-VBoxManage modifyvm "dev" --natpf1 "tcp-port9000,tcp,,9000,,9000"
-VBoxManage modifyvm "dev" --natpf1 "tcp-port9001,tcp,,9001,,9001"
+$ docker-machine stop dev
 
-docker-machine start dev
+$ VBoxManage modifyvm "dev" --natpf1 "tcp-port3000,tcp,,3000,,3000"
+$ VBoxManage modifyvm "dev" --natpf1 "tcp-port4000,tcp,,4000,,4000"
+$ VBoxManage modifyvm "dev" --natpf1 "tcp-port8000,tcp,,8000,,8000"
+$ VBoxManage modifyvm "dev" --natpf1 "tcp-port8001,tcp,,8001,,8001"
+$ VBoxManage modifyvm "dev" --natpf1 "tcp-port8080,tcp,,8080,,8080"
+$ VBoxManage modifyvm "dev" --natpf1 "tcp-port9000,tcp,,9000,,9000"
+$ VBoxManage modifyvm "dev" --natpf1 "tcp-port9001,tcp,,9001,,9001"
+
+$ docker-machine start dev
 
 eval "$(docker-machine env dev)"
 ```
@@ -52,13 +67,16 @@ $ docker images
 $ docker pull centos
 $ docker pull -a centos
 
-$ for x in busybox centos scratch registry hipache debian ubuntu-upstart nginx node mysql postgres redis java golang swarm logstash rails kibana ruby gcc haskell mongo nats pypy mono couchbase jruby percona thrift cassandra; do; docker pull $x; done
+$ for x in busybox centos hipache debian ubuntu-upstart nginx node mysql postgres redis java golang swarm logstash rails kibana ruby gcc haskell mongo nats pypy mono couchbase jruby cassandra; do docker pull $x; done
 ```
 
 ### Remove
 
 ```sh
 $ docker rmi centos
+
+# remove all images
+$ docker rmi $(docker images -qf "dangling=true")
 ```
 
 ### Visualize the tree of images
@@ -166,6 +184,23 @@ $ docker port web1 80
 
 $ curl "$(docker-machine ip dev):$(docker port web1 80 | cut -d':' -f2)"
 $ curl "$(docker-machine ip dev):$(docker port web2 80 | cut -d':' -f2)"
+```
+
+### Volumes
+
+```sh
+$ mkdir site && cd site
+$ echo 'Man, docker volumes!' > index.html
+$ docker run --name web -d -P -v $PWD:/usr/share/nginx/html nginx
+
+$ curl "$(docker-machine ip dev):$(docker port web 80 | cut -d':' -f2)"
+# you should see: "Man, docker volumes!"
+
+$ echo 'Another cool page!' > cool.html
+$ curl "$(docker-machine ip dev):$(docker port web 80 | cut -d':' -f2)/cool.html"
+# you should see: "Another cool page!"
+
+$ cd .. && rm -rf site
 ```
 
 ### Live statistics
