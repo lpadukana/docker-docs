@@ -64,10 +64,31 @@ $ docker images
 ### Pull New
 
 ```sh
+$ docker pull busybox
 $ docker pull centos
-$ docker pull -a centos
-
-$ for x in busybox centos hipache debian ubuntu-upstart nginx node mysql postgres redis java golang swarm logstash rails kibana ruby gcc haskell mongo nats pypy mono couchbase jruby cassandra; do docker pull $x; done
+$ docker pull debian
+$ docker pull ubuntu-upstart
+$ docker pull nginx
+$ docker pull node
+$ docker pull mysql
+$ docker pull redis
+$ docker pull java
+$ docker pull golang
+$ docker pull rails
+$ docker pull ruby
+$ docker pull jruby
+$ docker pull gcc
+$ docker pull haskell
+$ docker pull mongo
+$ docker pull nats
+$ docker pull pypy
+$ docker pull mono
+$ docker pull couchbase
+$ docker pull postgres
+$ docker pull cassandra
+$ docker pull swarm
+$ docker pull logstash
+$ docker pull kibana
 ```
 
 ### Remove
@@ -192,6 +213,7 @@ $ curl "$(docker-machine ip dev):$(docker port web2 80 | cut -d':' -f2)"
 $ mkdir site && cd site
 $ echo 'Man, docker volumes!' > index.html
 $ docker run --name web -d -P -v $PWD:/usr/share/nginx/html nginx
+# To mount in readonly mode, $ docker run --name web -d -P -v $PWD:/usr/share/nginx/html:ro nginx
 
 $ curl "$(docker-machine ip dev):$(docker port web 80 | cut -d':' -f2)"
 # you should see: "Man, docker volumes!"
