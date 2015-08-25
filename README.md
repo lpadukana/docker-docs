@@ -91,6 +91,8 @@ $ docker pull logstash
 $ docker pull kibana
 ```
 
+Note: If you see something like "Network timed out while trying to connect to https://index.docker.io/v1/repositories/library/mysql/images.", you might want to restart your vm!
+
 ### Remove
 
 ```sh
@@ -269,6 +271,14 @@ $ nsenter -m -u -n -p -i -t 19867 /bin/bash
 
 ```sh
 $ docker rm -f pinger
+
+# remove all stopped containers
+$ docker rm $(docker ps -q -f status=exited)
+
+# remove all stopped containers, force stop if needed
+$ docker rm -f `docker ps --no-trunc -aq`
+
+$ docker ps -a | grep 'weeks ago' | awk '{print $1}' | xargs --no-run-if-empty docker rm
 ```
 
 ### Saving changes made to a container into an image
