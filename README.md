@@ -64,32 +64,9 @@ $ docker images
 ### Pull New
 
 ```sh
-$ docker pull busybox
 $ docker pull centos
-$ docker pull debian
-$ docker pull ubuntu-upstart
-$ docker pull nginx
-$ docker pull node
-$ docker pull mysql
-$ docker pull redis
-$ docker pull java
-$ docker pull golang
-$ docker pull rails
-$ docker pull ruby
-$ docker pull jruby
-$ docker pull gcc
-$ docker pull haskell
-$ docker pull mongo
-$ docker pull nats
-$ docker pull pypy
-$ docker pull mono
-$ docker pull couchbase
-$ docker pull postgres
-$ docker pull cassandra
-$ docker pull swarm
-$ docker pull logstash
-$ docker pull kibana
 ```
+Other interesting images include busybox debian ubuntu-upstart nginx node mysql redis java golang rails ruby jruby gcc haskell mongo nats pypy mono couchbase postgres cassandra swarm logstash kibana
 
 Note: If you see something like "Network timed out while trying to connect to https://index.docker.io/v1/repositories/library/mysql/images.", you might want to restart your vm!
 
